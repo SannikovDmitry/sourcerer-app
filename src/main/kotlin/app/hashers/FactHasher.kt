@@ -1,5 +1,6 @@
 // Copyright 2017 Sourcerer Inc. All Rights Reserved.
 // Author: Anatoly Kislov (anatoly@sourcerer.io)
+// Author: Liubov Yaronskaya (lyaronskaya@sourcerer.io)
 
 package app.hashers
 
@@ -7,7 +8,6 @@ import app.FactCodes
 import app.Logger
 import app.api.Api
 import app.extractors.Extractor
-import app.extractors.ExtractorInterface
 import app.model.Author
 import app.model.Commit
 import app.model.Fact
@@ -46,7 +46,7 @@ class FactHasher(private val serverRepo: Repo = Repo(),
             fsLineNum.put(author, 0)
             // TODO(anatoly): Do the bin computations on the go.
             fsLinesPerCommits.put(author, Array(rehashes.size) {0})
-            fsVariableNaming.put(author, Array(2) { 0 })
+            fsVariableNaming.put(author, Array(3) { 0 })
         }
     }
 
@@ -109,8 +109,17 @@ class FactHasher(private val serverRepo: Repo = Repo(),
 
         lines.forEach { line ->
             val tokens = Extractor().tokenize(line)
-            fsVariableNaming[email]!![0] += tokens.count { it.contains('_') }
-            fsVariableNaming[email]!![1] += tokens.count { !it.contains('_') && it.contains(Regex("[a-z][A-Z]")) }
+            val underscores = tokens.count { it.contains('_') }
+            val camelCases = tokens.count {
+                !it.contains('_') && it.contains(Regex("[a-z][A-Z]"))
+            }
+            val others = tokens.size - underscores - camelCases
+            fsVariableNaming[email]!![FactCodes.VARIABLE_NAMING_SNAKE_CASE] +=
+                underscores
+            fsVariableNaming[email]!![FactCodes.VARIABLE_NAMING_CAMEL_CASE] +=
+                camelCases
+            fsVariableNaming[email]!![FactCodes.VARIABLE_NAMING_OTHER] +=
+                others
         }
     }
 

@@ -1,5 +1,6 @@
 // Copyright 2017 Sourcerer Inc. All Rights Reserved.
 // Author: Anatoly Kislov (anatoly@sourcerer.io)
+// Author: Liubov Yaronskaya (lyaronskaya@sourcerer.io)
 
 package app
 
@@ -19,4 +20,7 @@ object FactCodes {
     val REPO_DATE_END = 6  // Repo summary info. Date of last contribution.
     val REPO_TEAM_SIZE = 7  // Repo summary info. Number of contributors.
     val VARIABLE_NAMING = 13 // Variables naming fun fact.
+    val VARIABLE_NAMING_SNAKE_CASE = 0
+    val VARIABLE_NAMING_CAMEL_CASE = 1
+    val VARIABLE_NAMING_OTHER = 2
 }

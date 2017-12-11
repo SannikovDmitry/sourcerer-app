@@ -1,5 +1,6 @@
 // Copyright 2017 Sourcerer Inc. All Rights Reserved.
 // Author: Anatoly Kislov (anatoly@sourcerer.io)
+// Author: Liubov Yaronskaya (lyaronskaya@sourcerer.io)
 
 package test.tests.hashers
 
@@ -309,10 +310,17 @@ class FactHasherTest : Spek({
 
             FactHasher(repo, mockApi, rehashes, emails)
                     .updateFromObservable(observable, { e -> errors.add(e) })
+            if (errors.size > 0) {
+                println(errors[0].message)
+            }
             assertEquals(0, errors.size)
 
-            assertFactInt(FactCodes.VARIABLE_NAMING, 0, 1, author1, facts)
-            assertFactInt(FactCodes.VARIABLE_NAMING, 1, 2, author1, facts)
+            assertFactInt(FactCodes.VARIABLE_NAMING,
+                FactCodes.VARIABLE_NAMING_SNAKE_CASE, 1, author1, facts)
+            assertFactInt(FactCodes.VARIABLE_NAMING,
+                FactCodes.VARIABLE_NAMING_CAMEL_CASE, 2, author1, facts)
+            assertFactInt(FactCodes.VARIABLE_NAMING,
+                FactCodes.VARIABLE_NAMING_OTHER, 1, author1, facts)
         }
 
         afterGroup {
